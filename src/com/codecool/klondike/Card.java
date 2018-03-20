@@ -92,8 +92,10 @@ public class Card extends ImageView {
         for (Suit suit: Suit.values() ) {
             for (Rank rank: Rank.values()) {
                 result.add(new Card(suit, rank, true));
+
             }
         }
+        Collections.shuffle(result);
         return result;
     }
 
