@@ -111,6 +111,18 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
+
+        if (destPile.getPileType() == Pile.PileType.FOUNDATION){
+            if (destPile.isEmpty() && card.getRank() == Card.Rank.ACE){
+                return true;
+            }
+            if (destPile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal() &&
+                    destPile.getTopCard().getSuit() == card.getSuit()){
+                return true;
+            }
+            return false;
+        }
+
         //TODO
         return true;
     }
