@@ -49,20 +49,31 @@ public class Game extends Pane {
                 !card.isFaceDown() &&
                 e.getClickCount() == 2 && !e.isConsumed()) {
             e.consume();
-            for (Pile pile : foundationPiles) {
-                if (pile.isEmpty()) {
-                    if (card.getRank() == Card.Rank.ACE) {
-                        pile.addCard(card);
-                        break;
-                    }
-                } else if (pile.getTopCard().getSuit() == card.getSuit() &&
-                        pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
+            handleDoubleClick(card);
+        }
+    };
+
+    /**
+     * If double-clicked on a faceup card in the Discard pile or the Tableau piles:
+     * Checks if the card can be placed to one of the foundation piles.
+     * If the move is valid, the card is placed to that foundation pile.
+     *
+     * @param card the card that was clicked twice.
+     */
+    private void handleDoubleClick(Card card) {
+        for (Pile pile : foundationPiles) {
+            if (pile.isEmpty()) {
+                if (card.getRank() == Card.Rank.ACE) {
                     pile.addCard(card);
                     break;
                 }
+            } else if (pile.getTopCard().getSuit() == card.getSuit() &&
+                    pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
+                pile.addCard(card);
+                break;
             }
         }
-    };
+    }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
