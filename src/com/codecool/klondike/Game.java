@@ -1,9 +1,12 @@
 package com.codecool.klondike;
 
+import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -32,11 +35,13 @@ public class Game extends Pane {
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
+    private static History history = new History();
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+            history.addEvent(EventType.moveToDest,card.getContainingPile(),card);
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -94,10 +99,22 @@ public class Game extends Pane {
         return false;
     }
 
+    private void addButtons(){
+        Button unDoButton = new Button("Undo");
+        unDoButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                history.undo();
+            }
+        });
+        this.getChildren().add(unDoButton);
+    }
+
     public Game() {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        addButtons();
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -209,6 +226,7 @@ public class Game extends Pane {
         }
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
+        history.addEvent(EventType.mouseSlide,draggedCards.get(0).getContainingPile(),FXCollections.observableArrayList(draggedCards));
         draggedCards.clear();
     }
 
@@ -245,16 +263,31 @@ public class Game extends Pane {
         }
     }
 
+    /**
+     * Deals the cards to the tableau columns at the start of the game.
+     * Each column gets one more cards then the first one.
+     * The top cards of the stockPile gets flipped the others are turned over.
+     */
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
-        //TODO
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
+        for (int tableauColumn = 0; tableauColumn < tableauPiles.size(); tableauColumn++) {
+            Pile currentPile = tableauPiles.get(tableauColumn);
+
+            for (int j = 0; j < tableauColumn; j++) {
+                stockPile.getTopCard().moveToPile(currentPile);
+            }
+            Card topCard = stockPile.getTopCard();
+            topCard.flip();
+            topCard.moveToPile(currentPile);
+        }
 
     }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
