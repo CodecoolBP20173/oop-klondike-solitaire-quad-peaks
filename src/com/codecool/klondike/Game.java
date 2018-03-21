@@ -1,11 +1,8 @@
 package com.codecool.klondike;
 
-import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -41,13 +38,46 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
-            history.addEvent(EventType.moveToDest,card.getContainingPile(),card);
+            e.consume();
+            history.addEvent(EventType.moveToDiscard, card.getContainingPile(), card);
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }
+        if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
+                card.getContainingPile().getPileType() == Pile.PileType.DISCARD) &&
+                card.equals(card.getContainingPile().getTopCard()) &&
+                !card.isFaceDown() &&
+                e.getClickCount() == 2 && !e.isConsumed()) {
+            e.consume();
+            handleDoubleClick(card);
+        }
     };
+
+    /**
+     * If double-clicked on a faceup card in the Discard pile or the Tableau piles:
+     * Checks if the card can be placed to one of the foundation piles.
+     * If the move is valid, the card is placed to that foundation pile.
+     *
+     * @param card the card that was clicked twice.
+     */
+    private void handleDoubleClick(Card card) {
+        for (Pile pile : foundationPiles) {
+            if (pile.isEmpty()) {
+                if (card.getRank() == Card.Rank.ACE) {
+                    history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
+                    card.moveToPile(pile);
+                    break;
+                }
+            } else if (pile.getTopCard().getSuit() == card.getSuit() &&
+                    pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
+                history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
+                card.moveToPile(pile);
+                break;
+            }
+        }
+    }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
@@ -99,7 +129,7 @@ public class Game extends Pane {
         return false;
     }
 
-    private void addButtons(){
+    private void addButtons() {
         Button unDoButton = new Button("Undo");
         unDoButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -194,7 +224,7 @@ public class Game extends Pane {
         }
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
-        history.addEvent(EventType.mouseSlide,draggedCards.get(0).getContainingPile(),FXCollections.observableArrayList(draggedCards));
+        history.addEvent(EventType.mouseSlide, draggedCards.get(0).getContainingPile(), FXCollections.observableArrayList(draggedCards));
         draggedCards.clear();
     }
 
