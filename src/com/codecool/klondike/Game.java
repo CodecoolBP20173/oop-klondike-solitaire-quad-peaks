@@ -213,7 +213,11 @@ public class Game extends Pane {
         }
     }
 
-
+    /**
+     * Deals the cards to the tableau columns at the start of the game.
+     * Each column gets one more cards then the first one.
+     * The top cards of the stockPile gets flipped the others are turned over.
+     */
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
         deckIterator.forEachRemaining(card -> {
@@ -221,10 +225,10 @@ public class Game extends Pane {
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
-        for (int tableauRows = 0; tableauRows < tableauPiles.size(); tableauRows++) {
-            Pile currentPile = tableauPiles.get(tableauRows);
+        for (int tableauColumn = 0; tableauColumn < tableauPiles.size(); tableauColumn++) {
+            Pile currentPile = tableauPiles.get(tableauColumn);
 
-            for (int j = 0; j < tableauRows; j++) {
+            for (int j = 0; j < tableauColumn; j++) {
                 stockPile.getTopCard().moveToPile(currentPile);
             }
             Card topCard = stockPile.getTopCard();
