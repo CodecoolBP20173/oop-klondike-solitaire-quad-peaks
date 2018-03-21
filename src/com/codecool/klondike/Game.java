@@ -42,6 +42,23 @@ public class Game extends Pane {
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }
+        if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU &&
+                card.equals(card.getContainingPile().getTopCard()) &&
+                !card.isFaceDown() &&
+                e.getClickCount() == 2) {
+            for (Pile pile : foundationPiles) {
+                if (pile.isEmpty()) {
+                    if (card.getRank() == Card.Rank.ACE) {
+                        // Move to pile
+                        break;
+                    }
+                } else if (pile.getTopCard().getSuit() == card.getSuit() &&
+                        pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
+                    // Move to pile
+                    break;
+                }
+            }
+        }
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
