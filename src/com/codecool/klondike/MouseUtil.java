@@ -34,6 +34,8 @@ public class MouseUtil {
     public static void slideToDest(List<Card> cardsToSlide, Pile destPile) {
         if (cardsToSlide == null)
             return;
+
+
         double destCardGap = destPile.getCardGap();
         double targetX;
         double targetY;
@@ -58,6 +60,7 @@ public class MouseUtil {
                         currentCard.getDropShadow().setRadius(2);
                         currentCard.getDropShadow().setOffsetX(0);
                         currentCard.getDropShadow().setOffsetY(0);
+
                     });
         }
     }
