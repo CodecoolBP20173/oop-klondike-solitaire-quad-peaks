@@ -67,13 +67,13 @@ public class Game extends Pane {
             if (pile.isEmpty()) {
                 if (card.getRank() == Card.Rank.ACE) {
                     history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
-                    pile.addCard(card);
+                    card.moveToPile(pile);
                     break;
                 }
             } else if (pile.getTopCard().getSuit() == card.getSuit() &&
                     pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
                 history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
-                pile.addCard(card);
+                card.moveToPile(pile);
                 break;
             }
         }
