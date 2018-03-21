@@ -114,23 +114,37 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
-            if (destPile.isEmpty()) {
-                if (card.getRank() == Card.Rank.ACE) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (destPile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal() &&
-                    destPile.getTopCard().getSuit() == card.getSuit()) {
-                return true;
-            } else {
-                return false;
-            }
+            return isMoveToFoundationValid(card, destPile);
         }
 
 
         //TODO
         return false;
+    }
+
+    /**
+     * Checks the move of a card to a foundation pile is valid:
+     * Empty pile and the card is Ace.
+     * Not empty pile, and the card is the next in order, based on Rank.
+     * It returns 'true' if the move is valid, and 'false' if the move is invalid.
+     *
+     * @param card     the card that has to pass the check (one that is being moved, or bottom one of a moving set of cards).
+     * @param destPile the pile that the moved card would be placed on (in case this test passes)
+     * @return true if the move is valid, false if the move is invalid.
+     */
+    private boolean isMoveToFoundationValid(Card card, Pile destPile) {
+        if (destPile.isEmpty()) {
+            if (card.getRank() == Card.Rank.ACE) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (destPile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal() &&
+                destPile.getTopCard().getSuit() == card.getSuit()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
