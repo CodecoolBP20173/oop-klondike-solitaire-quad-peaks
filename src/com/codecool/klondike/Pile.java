@@ -74,6 +74,13 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public static void flipTopCardOfTableau(Pile sourcePile) {
+        if (sourcePile.getPileType() == Pile.PileType.TABLEAU) {
+            Card card = sourcePile.getTopCard();
+            if (card.isFaceDown()) card.flip();
+        }
+    }
+
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
         BackgroundFill backgroundFill = new BackgroundFill(Color.gray(0.0, 0.2), null, null);

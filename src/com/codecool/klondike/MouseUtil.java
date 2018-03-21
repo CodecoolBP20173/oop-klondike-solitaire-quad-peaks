@@ -48,6 +48,7 @@ public class MouseUtil {
 
         for (int i = 0; i < cardsToSlide.size(); i++) {
             Card currentCard = cardsToSlide.get(i);
+            Pile sourcePile = currentCard.getContainingPile();
             double sourceX = currentCard.getLayoutX() + currentCard.getTranslateX();
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
 
@@ -58,6 +59,7 @@ public class MouseUtil {
                         currentCard.getDropShadow().setRadius(2);
                         currentCard.getDropShadow().setOffsetX(0);
                         currentCard.getDropShadow().setOffsetY(0);
+                        Pile.flipTopCardOfTableau(sourcePile);
                     });
         }
     }
