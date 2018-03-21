@@ -213,16 +213,27 @@ public class Game extends Pane {
         }
     }
 
+
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
-        //TODO
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
+        for (int tableauRows = 0; tableauRows < tableauPiles.size(); tableauRows++) {
+            Pile currentPile = tableauPiles.get(tableauRows);
+
+            for (int j = 0; j < tableauRows; j++) {
+                stockPile.getTopCard().moveToPile(currentPile);
+            }
+            Card topCard = stockPile.getTopCard();
+            topCard.flip();
+            topCard.moveToPile(currentPile);
+        }
 
     }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
