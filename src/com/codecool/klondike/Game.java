@@ -137,13 +137,14 @@ public class Game extends Pane {
 
         //TODO
         if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
-            String draggedCardValue = card.getRank().name();
+
+            int draggedCardValue = card.getRank().ordinal();
             String draggedCardColor;
             String destPileTopColor;
             if (!destPile.isEmpty()) {
 
                 String destPileTopSuitName = destPile.getTopCard().getSuit().name();
-                String destPileTopRankName = destPile.getTopCard().getRank().name();
+                int destPileTopRankValue = destPile.getTopCard().getRank().ordinal();
 
                 if (card.getSuit().name().equals("HEARTS") || card.getSuit().name().equals("DIAMONDS")) {
                     draggedCardColor = "red";
@@ -157,12 +158,12 @@ public class Game extends Pane {
                     destPileTopColor = "black";
                 }
 
-                if (!destPileTopColor.equals(draggedCardColor)) {
+                if (!destPileTopColor.equals(draggedCardColor) && destPileTopRankValue  == draggedCardValue + 1) {
                     return true;
                 }
 
             } else {
-                if (draggedCardValue.equals("KING")){
+                if (card.getRank().name().equals("KING")){
                     return true;
                 }
             }
