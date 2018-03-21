@@ -1,11 +1,8 @@
 package com.codecool.klondike;
 
-import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -42,7 +39,7 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
             e.consume();
-            history.addEvent(EventType.moveToDest,card.getContainingPile(),card);
+            history.addEvent(EventType.moveToDiscard, card.getContainingPile(), card);
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -69,11 +66,13 @@ public class Game extends Pane {
         for (Pile pile : foundationPiles) {
             if (pile.isEmpty()) {
                 if (card.getRank() == Card.Rank.ACE) {
+                    history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
                     pile.addCard(card);
                     break;
                 }
             } else if (pile.getTopCard().getSuit() == card.getSuit() &&
                     pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
+                history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
                 pile.addCard(card);
                 break;
             }
@@ -130,7 +129,7 @@ public class Game extends Pane {
         return false;
     }
 
-    private void addButtons(){
+    private void addButtons() {
         Button unDoButton = new Button("Undo");
         unDoButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -225,7 +224,7 @@ public class Game extends Pane {
         }
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
-        history.addEvent(EventType.mouseSlide,draggedCards.get(0).getContainingPile(),FXCollections.observableArrayList(draggedCards));
+        history.addEvent(EventType.mouseSlide, draggedCards.get(0).getContainingPile(), FXCollections.observableArrayList(draggedCards));
         draggedCards.clear();
     }
 

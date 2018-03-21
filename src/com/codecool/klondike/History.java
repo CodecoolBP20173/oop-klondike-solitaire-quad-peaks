@@ -16,10 +16,14 @@ public class History {
                 List<Card> cardList = (List<Card>)lastEvent.cards;
                 MouseUtil.slideToDest(cardList,lastEvent.previousPile);
                 break;
-            case moveToDest:
+            case moveToDiscard:
                 Card card = (Card)lastEvent.cards;
                 card.moveToPile(lastEvent.previousPile);
                 card.flip();
+                break;
+            case moveToFoundation:
+                Card foundCard = (Card)lastEvent.cards;
+                foundCard.moveToPile(lastEvent.previousPile);
                 break;
         }
         System.out.println("undo triggered");
