@@ -25,6 +25,7 @@ public class Card extends ImageView {
 
 
     public Card(Suit suit, Rank rank, boolean faceDown) {
+
         this.suit = suit;
         this.rank = rank;
         this.faceDown = faceDown;
@@ -37,6 +38,16 @@ public class Card extends ImageView {
 
     public Suit getSuit() {
         return suit;
+    }
+
+    public String getColor () {
+        String color;
+        if (this.getSuit().name().equals("HEARTS") || this.getSuit().name().equals("DIAMONDS")) {
+            color = "red";
+        } else {
+            color = "black";
+        }
+        return color;
     }
 
     public Rank getRank() {
@@ -81,7 +92,11 @@ public class Card extends ImageView {
 
     public static boolean isOppositeColor(Card card1, Card card2) {
         //TODO
-        return true;
+        if (!card1.getColor().equals(card2.getColor())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
