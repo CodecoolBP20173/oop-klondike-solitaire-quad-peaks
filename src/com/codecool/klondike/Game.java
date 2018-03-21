@@ -46,7 +46,8 @@ public class Game extends Pane {
                 card.getContainingPile().getPileType() == Pile.PileType.DISCARD) &&
                 card.equals(card.getContainingPile().getTopCard()) &&
                 !card.isFaceDown() &&
-                e.getClickCount() == 2) {
+                e.getClickCount() == 2 && !e.isConsumed()) {
+            e.consume();
             for (Pile pile : foundationPiles) {
                 if (pile.isEmpty()) {
                     if (card.getRank() == Card.Rank.ACE) {
