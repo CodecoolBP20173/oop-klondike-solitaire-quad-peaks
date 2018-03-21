@@ -42,19 +42,20 @@ public class Game extends Pane {
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }
-        if (card.getContainingPile().getPileType() == Pile.PileType.TABLEAU &&
+        if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
+                card.getContainingPile().getPileType() == Pile.PileType.DISCARD) &&
                 card.equals(card.getContainingPile().getTopCard()) &&
                 !card.isFaceDown() &&
                 e.getClickCount() == 2) {
             for (Pile pile : foundationPiles) {
                 if (pile.isEmpty()) {
                     if (card.getRank() == Card.Rank.ACE) {
-                        // Move to pile
+                        pile.addCard(card);
                         break;
                     }
                 } else if (pile.getTopCard().getSuit() == card.getSuit() &&
                         pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
-                    // Move to pile
+                    pile.addCard(card);
                     break;
                 }
             }
