@@ -182,8 +182,6 @@ public class Game extends Pane {
      */
     private boolean isMoveToTableauValid(Card card, Pile destPile) {
         int draggedCardValue = card.getRank().ordinal();
-        String draggedCardColor = card.getColor();
-        String destPileTopColor = destPile.getTopCardColor();
         int destPileTopRankValue = destPile.getTopCardValue();
 
         if (destPile.isEmpty()) {
@@ -192,7 +190,7 @@ public class Game extends Pane {
             } else {
                 return false;
             }
-        } else if (!destPileTopColor.equals(draggedCardColor) && destPileTopRankValue  == draggedCardValue + 1) {
+        } else if (Card.isOppositeColor(card, destPile.getTopCard()) && destPileTopRankValue  == draggedCardValue + 1) {
             return true;
         } else {
             return false;
