@@ -341,6 +341,7 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
+    
     private void autoWinGame() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
         currentPiles.add(discardPile);
@@ -362,6 +363,12 @@ public class Game extends Pane {
 
     }
 
+    /**
+     * Given a card, selects on which of the foundation piles that card would fit.
+     *
+     * @param card the card for which the destination (foundation pile) is chosen
+     * @return the foundation pile, on which the 'card' would have to go
+     */
     private Pile autoSelectDest(Card card) {
         for (Pile pile : foundationPiles) {
             if (card.getRank() == Card.Rank.ACE) {
