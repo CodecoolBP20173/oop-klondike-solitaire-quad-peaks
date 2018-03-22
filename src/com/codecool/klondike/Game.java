@@ -72,14 +72,18 @@ public class Game extends Pane {
         for (Pile pile : foundationPiles) {
             if (pile.isEmpty()) {
                 if (card.getRank() == Card.Rank.ACE) {
-                    history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
+                    Pile containingPile = card.getContainingPile();
+                    history.addEvent(EventType.moveToFoundation, containingPile, card);
                     card.moveToPile(pile);
+                    Pile.flipTopCardOfTableau(containingPile);
                     break;
                 }
             } else if (pile.getTopCard().getSuit() == card.getSuit() &&
                     pile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal()) {
-                history.addEvent(EventType.moveToFoundation, card.getContainingPile(), card);
+                Pile containingPile = card.getContainingPile();
+                history.addEvent(EventType.moveToFoundation, containingPile, card);
                 card.moveToPile(pile);
+                Pile.flipTopCardOfTableau(containingPile);
                 break;
             }
         }
