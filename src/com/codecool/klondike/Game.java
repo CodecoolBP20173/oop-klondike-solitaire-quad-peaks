@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,6 +40,8 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
     public static History history;
+    private int numOfCardsinFoundationPiles;
+
     public List<Card> remainingCards = null;
 
 
@@ -88,6 +91,7 @@ public class Game extends Pane {
                 break;
             }
         }
+        isGameWon();
     }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -145,9 +149,15 @@ public class Game extends Pane {
         }
     };
 
-    public boolean isGameWon() {
-        //TODO
-        return false;
+    public void isGameWon() {
+
+        for (Pile pile: foundationPiles) {
+            numOfCardsinFoundationPiles += pile.numOfCards();
+        }
+        if (numOfCardsinFoundationPiles == 52) {
+            System.out.println("WINWINWINW");
+        }
+        numOfCardsinFoundationPiles = 0;
     }
 
     private void addButtons() {
@@ -179,15 +189,24 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        Collections.reverse(discardPile.getCards());
+        for (Card discardedCard : discardPile.getCards()) {
+            discardedCard.flip();
+            stockPile.addCard(discardedCard);
+        }
+        discardPile.clear();
         System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
-            return isMoveToFoundationValid(card, destPile);
-        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
-            return isMoveToTableauValid(card, destPile);
+        if (!card.isFaceDown()) {
+            if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
+                return isMoveToFoundationValid(card, destPile);
+            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+                return isMoveToTableauValid(card, destPile);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
