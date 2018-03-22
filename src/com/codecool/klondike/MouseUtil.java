@@ -19,6 +19,7 @@ import java.util.List;
 public class MouseUtil {
 
     public static Game game;
+    static boolean autoFlip = false;
 
     public static void slideBack(Card card) {
         double sourceX = card.getLayoutX() + card.getTranslateX();
@@ -58,6 +59,7 @@ public class MouseUtil {
             double sourceX = currentCard.getLayoutX() + currentCard.getTranslateX();
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
 
+            autoFlip = false;
             animateCardMovement(currentCard, sourceX, sourceY, targetX,
                     targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(300),
                     e -> {
@@ -68,7 +70,10 @@ public class MouseUtil {
 
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
-                        Pile.flipTopCardOfTableau(sourcePile);
+                        if(!autoFlip){
+                            Pile.flipTopCardOfTableau(sourcePile);
+                            autoFlip = true;
+                        }
                         System.out.println("asd");
                     });
         }
