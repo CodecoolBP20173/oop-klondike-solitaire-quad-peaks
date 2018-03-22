@@ -93,7 +93,7 @@ public class Game extends Pane {
         dragStartY = e.getSceneY();
     };
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
-        if(draggedCards.size() == 0){
+        if(draggedCards.isEmpty()){
             Card card = (Card) e.getSource();
             Pile activePile = card.getContainingPile();
             List<Card> cardsToDrag = activePile.getCardAndbelow(activePile.getCards().indexOf(card));
