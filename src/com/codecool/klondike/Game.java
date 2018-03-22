@@ -182,15 +182,13 @@ public class Game extends Pane {
      */
     private boolean isMoveToTableauValid(Card card, Pile destPile) {
         int draggedCardValue = card.getRank().ordinal();
-        int destPileTopRankValue = destPile.getTopCardValue();
-
         if (destPile.isEmpty()) {
             if (card.getRank().name().equals("KING")) {
                 return true;
             } else {
                 return false;
             }
-        } else if (Card.isOppositeColor(card, destPile.getTopCard()) && destPileTopRankValue  == draggedCardValue + 1) {
+        } else if (Card.isOppositeColor(card, destPile.getTopCard()) && destPile.getTopCardValue() == draggedCardValue + 1) {
             return true;
         } else {
             return false;
