@@ -15,7 +15,7 @@ public class Pile extends Pane {
 
     private PileType pileType;
     private String name;
-    private double cardGap;
+    private double cardGap = 1;
     private ObservableList<Card> cards = FXCollections.observableArrayList();
 
     public Pile(PileType pileType, String name, double cardGap) {
@@ -37,6 +37,14 @@ public class Pile extends Pane {
 
     public ObservableList<Card> getCards() {
         return cards;
+    }
+
+    public List<Card> getCardAndbelow(int index){
+        List<Card> belowcards = FXCollections.observableArrayList();
+        for(int i = index; i < cards.size(); i++){
+            belowcards.add(cards.get(i));
+        }
+        return belowcards;
     }
 
     public int numOfCards() {
@@ -80,6 +88,19 @@ public class Pile extends Pane {
             if (card.isFaceDown()) card.flip();
         }
     }
+
+    public String getTopCardColor() {
+        if (cards.isEmpty())
+            return null;
+        else
+            return cards.get(cards.size() - 1).getColor();
+    }
+
+    public int getTopCardValue() {
+            return this.getTopCard().getRank().ordinal();
+    }
+
+
 
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
