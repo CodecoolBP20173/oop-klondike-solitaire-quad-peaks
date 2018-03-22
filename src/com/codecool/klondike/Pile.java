@@ -48,8 +48,8 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+
+        return cards.size();
     }
 
     public boolean isEmpty() {
@@ -92,13 +92,6 @@ public class Pile extends Pane {
             }
 
         }
-    }
-
-    public String getTopCardColor() {
-        if (cards.isEmpty())
-            return null;
-        else
-            return cards.get(cards.size() - 1).getColor();
     }
 
     public int getTopCardValue() {
