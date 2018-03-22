@@ -154,7 +154,7 @@ public class Game extends Pane {
         for (Pile pile: foundationPiles) {
             numOfCardsinFoundationPiles += pile.numOfCards();
         }
-        if (numOfCardsinFoundationPiles == 52) {
+        if (numOfCardsinFoundationPiles == 3) {
             addAlert();
             System.out.println("WINWINWINW");
 
@@ -177,7 +177,7 @@ public class Game extends Pane {
         Alert winalert = new Alert(Alert.AlertType.INFORMATION);
         winalert.setHeaderText("Congratulations!");
         winalert.setContentText("You have won the game!");
-        winalert.showAndWait();
+        winalert.show();
     }
 
 
