@@ -341,7 +341,7 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
-    
+
     private void autoWinGame() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
         currentPiles.add(discardPile);
@@ -418,10 +418,8 @@ public class Game extends Pane {
         currentPiles.add(stockPile);
         currentPiles.addAll(tableauPiles);
         for (Pile pile : currentPiles) {
-            for (Card card : pile.getCards()) {
-                if (card.isFaceDown()) {
-                    return false;
-                }
+            if (!pile.allCardsFaceup()){
+                return false;
             }
         }
         return true;
