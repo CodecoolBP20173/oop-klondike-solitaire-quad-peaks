@@ -379,6 +379,11 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
+    /**
+     * Checks if the autoWin boolean value is true or false.
+     * If true, that menas that the game is in automatic-winning-mode, hence initiates the next step of the automatic winning.
+     * If false, than calls allCardsFaceUp function, to check if all cards are visible, and therefore the winning conditions will be met.
+     */
     public void checkAutoWin() {
         if (autoWin) {
             autoWinNextStep();
@@ -412,6 +417,9 @@ public class Game extends Pane {
         MouseUtil.slideToDest(temp, autoSelectDest(temp.get(0)));
     }
 
+    /**
+     * Removes one card from the first (0-th) position of the remainingCards Array.
+     */
     public void removeOneRemainingCard() {
         remainingCards.remove(0);
     }
