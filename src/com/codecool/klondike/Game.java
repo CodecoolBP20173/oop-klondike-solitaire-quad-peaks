@@ -39,6 +39,7 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
     public static History history;
+    public List<Card> remainingCards = null;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -342,8 +343,9 @@ public class Game extends Pane {
     }
 
 
-    private void autoWinGame() {
-        List<Pile> currentPiles = FXCollections.observableArrayList();
+    private void setRemainingCards() {
+        List<Pile> currentPiles = new ArrayList();
+        List<Card> remainingCardsInOrder = new ArrayList();
         currentPiles.add(discardPile);
         currentPiles.addAll(tableauPiles);
         while (cardsOnTable()) {
@@ -356,9 +358,13 @@ public class Game extends Pane {
                     }
                 }
             }
+            remainingCardsInOrder.add(smallest);
+            remainingCards = remainingCardsInOrder;
+            /*
             List<Card> temp = new ArrayList<>(1);
             temp.add(smallest);
             MouseUtil.slideToDest(temp, autoSelectDest(smallest));
+            */
         }
 
     }
@@ -412,7 +418,7 @@ public class Game extends Pane {
      *
      * @return true if there are no facedown cards, false otherwise
      */
-    private boolean allCardsFaceUp() {
+    public boolean allCardsFaceUp() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
         currentPiles.add(discardPile);
         currentPiles.add(stockPile);
