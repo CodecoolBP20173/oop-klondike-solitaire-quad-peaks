@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -339,6 +340,26 @@ public class Game extends Pane {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    }
+
+    private void autoWinGame(){
+        List<Pile> currentPiles = FXCollections.observableArrayList();
+        currentPiles.add(discardPile);
+        currentPiles.addAll(tableauPiles);
+        while (cardsOnTable()){
+            // ToDo
+        }
+
+    }
+
+    /**
+     * Checks if there are still cards in any of the Stock, Discard or Foundation piles.
+     *
+     * @return true if there are cards on the tabe, false otherwise
+     */
+    private boolean cardsOnTable(){
+        // ToDo
+        return false;
     }
 
     public Button setRestartButton(Stage primaryStage) {
