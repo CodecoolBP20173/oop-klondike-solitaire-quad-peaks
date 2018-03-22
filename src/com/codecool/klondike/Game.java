@@ -39,6 +39,7 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
     public static History history;
+    private int numOfCardsinFoundationPiles;
 
 
 
@@ -88,6 +89,7 @@ public class Game extends Pane {
                 break;
             }
         }
+        isGameWon();
     }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -145,9 +147,15 @@ public class Game extends Pane {
         }
     };
 
-    public boolean isGameWon() {
-        //TODO
-        return false;
+    public void isGameWon() {
+
+        for (Pile pile: foundationPiles) {
+            numOfCardsinFoundationPiles += pile.numOfCards();
+        }
+        if (numOfCardsinFoundationPiles == 52) {
+            System.out.println("WINWINWINW");
+        }
+        numOfCardsinFoundationPiles = 0;
     }
 
     private void addButtons() {
