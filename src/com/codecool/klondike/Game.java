@@ -176,11 +176,39 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
             return isMoveToFoundationValid(card, destPile);
+        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+            return isMoveToTableauValid(card, destPile);
+        } else {
+            return false;
         }
+    }
 
+    /**
+     * Checks the move of a card to a tableau pile is valid:
+     * Empty pile and the card is King.
+     * Not empty pile, and the value of the card is one less than the destination pile based on Rank.
+     * Not empty pile, and the color of the card is the opposite than the top card on the destination pile based on the Suit.
+     * It returns 'true' if the move is valid, and 'false' if the move is invalid.
+     *
+     * @param card     the card that has to pass the check (one that is being moved, or bottom one of a moving set of cards).
+     * @param destPile the pile that the moved card would be placed on (in case this test passes)
+     * @return true if the move is valid, false if the move is invalid.
+     */
+    private boolean isMoveToTableauValid(Card card, Pile destPile) {
+        int draggedCardValue = card.getRank().ordinal();
+        int destPileTopRankValue = destPile.getTopCardValue();
 
-        //TODO
-        return false;
+        if (destPile.isEmpty()) {
+            if (card.getRank().name().equals("KING")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (Card.isOppositeColor(card, destPile.getTopCard()) && destPileTopRankValue  == draggedCardValue + 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
