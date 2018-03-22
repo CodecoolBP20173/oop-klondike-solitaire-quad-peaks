@@ -87,6 +87,8 @@ public class MouseUtil {
             double targetX, double targetY, Duration duration,
             EventHandler<ActionEvent> doAfter) {
 
+        card.toFront();
+        
         Path path = new Path();
         path.getElements().add(new MoveToAbs(card, sourceX, sourceY));
         path.getElements().add(new LineToAbs(card, targetX, targetY));
