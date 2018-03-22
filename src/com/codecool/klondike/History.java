@@ -1,6 +1,7 @@
 package com.codecool.klondike;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class History {
@@ -31,21 +32,22 @@ public class History {
                 flipCard.flip();
                 undoAgain = true;
                 break;
+            case reloadStack:
+                List<Card> cardListr = (List<Card>)lastEvent.cards;
+                Collections.reverse(cardListr);
+                for (Object discardedCard : cardListr.toArray()) {
+                    ((Card)discardedCard).moveToPile(lastEvent.previousPile);
+                    ((Card)discardedCard).flip();
+                }
+                break;
         }
         System.out.println("undo triggered");
         events.remove(lastEvent);
         if(undoAgain) undo();
     }
 
-    public void redo(){
-
-    }
-
     public void addEvent(EventType type, Pile previousPile, Object cards){
         events.add(new Event(type, previousPile, cards));
     }
 
-    private void removeEvent(){
-
-    }
 }

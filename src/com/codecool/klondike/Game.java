@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.image.ImageView;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -161,7 +163,9 @@ public class Game extends Pane {
             numOfCardsinFoundationPiles += pile.numOfCards();
         }
         if (numOfCardsinFoundationPiles == 52) {
+            addAlert();
             System.out.println("WINWINWINW");
+
         }
         numOfCardsinFoundationPiles = 0;
     }
@@ -176,6 +180,14 @@ public class Game extends Pane {
         });
         this.getChildren().add(unDoButton);
     }
+
+    private void addAlert() {
+        Alert winalert = new Alert(Alert.AlertType.INFORMATION);
+        winalert.setHeaderText("Congratulations!");
+        winalert.setContentText("You have won the game!");
+        winalert.show();
+    }
+
 
     public Game(Stage primaryStage) {
         deck = Card.createNewDeck();
@@ -195,12 +207,13 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        Collections.reverse(discardPile.getCards());
-        for (Card discardedCard : discardPile.getCards()) {
-            discardedCard.flip();
-            stockPile.addCard(discardedCard);
+        ObservableList<Card> cards = discardPile.getCards();
+        Collections.reverse(cards);
+        for (Object discardedCard : cards.toArray()) {
+            ((Card)discardedCard).moveToPile(stockPile);
+            ((Card)discardedCard).flip();
         }
-        discardPile.clear();
+        history.addEvent(EventType.reloadStack,discardPile,stockPile.getCards());
         System.out.println("Stock refilled from discard pile.");
     }
 
