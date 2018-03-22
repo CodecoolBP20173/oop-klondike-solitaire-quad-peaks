@@ -31,6 +31,7 @@ public class MouseUtil {
                     card.getDropShadow().setOffsetX(0);
                     card.getDropShadow().setOffsetY(0);
                     game.draggedCards.remove(card);
+                    System.out.println("asd");
                 });
     }
 
@@ -68,6 +69,7 @@ public class MouseUtil {
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
                         Pile.flipTopCardOfTableau(sourcePile);
+                        System.out.println("asd");
                     });
         }
     }

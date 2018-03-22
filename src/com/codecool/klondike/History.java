@@ -10,6 +10,7 @@ public class History {
 
     public void undo(){
         if(events.size() == 0) return;
+        Boolean undoAgain = false;
         Event lastEvent = events.get(events.size() - 1);
         switch (lastEvent.type){
             case mouseSlide:
@@ -25,9 +26,15 @@ public class History {
                 Card foundCard = (Card)lastEvent.cards;
                 foundCard.moveToPile(lastEvent.previousPile);
                 break;
+            case cardFlip:
+                Card flipCard = (Card)lastEvent.cards;
+                flipCard.flip();
+                undoAgain = true;
+                break;
         }
         System.out.println("undo triggered");
         events.remove(lastEvent);
+        if(undoAgain) undo();
     }
 
     public void redo(){

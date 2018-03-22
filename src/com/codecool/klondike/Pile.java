@@ -85,7 +85,12 @@ public class Pile extends Pane {
     public static void flipTopCardOfTableau(Pile sourcePile) {
         if (sourcePile.getPileType() == Pile.PileType.TABLEAU) {
             Card card = sourcePile.getTopCard();
-            if (card.isFaceDown()) card.flip();
+            if (card != null && card.isFaceDown())
+            {
+                card.flip();
+                Game.history.addEvent(EventType.cardFlip,null,card);
+            }
+
         }
     }
 
