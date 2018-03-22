@@ -274,7 +274,7 @@ public class Game extends Pane {
                 return false;
             }
         } else if (destPile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal() &&
-                destPile.getTopCard().getSuit() == card.getSuit()) {
+                Card.isSameSuit(destPile.getTopCard(), card)) {
             return true;
         } else {
             return false;
