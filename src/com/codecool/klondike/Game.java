@@ -377,8 +377,6 @@ public class Game extends Pane {
                     } else {
                         throw new RuntimeException("ERROR: Card can't be placed in matching suit foundation pile. ");
                     }
-                } else {
-                    throw new RuntimeException("ERROR: Matching suit foundation pile can't be found. ");
                 }
             }
         }
