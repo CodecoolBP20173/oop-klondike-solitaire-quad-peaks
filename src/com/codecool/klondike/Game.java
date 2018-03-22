@@ -59,7 +59,7 @@ public class Game extends Pane {
 
             checkAutoWin();
 
-            System.out.println("Placed " + card + " to the waste.");
+//            System.out.println("Placed " + card + " to the waste.");
         }
         if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
                 card.getContainingPile().getPileType() == Pile.PileType.DISCARD) &&
@@ -164,7 +164,6 @@ public class Game extends Pane {
         }
         if (numOfCardsinFoundationPiles == 52) {
             addAlert();
-            System.out.println("WINWINWINW");
 
         }
         numOfCardsinFoundationPiles = 0;
@@ -214,7 +213,7 @@ public class Game extends Pane {
             ((Card)discardedCard).flip();
         }
         history.addEvent(EventType.reloadStack,discardPile,stockPile.getCards());
-        System.out.println("Stock refilled from discard pile.");
+//        System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
@@ -310,7 +309,7 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        System.out.println(msg);
+//        System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         history.addEvent(EventType.mouseSlide, draggedCards.get(0).getContainingPile(), FXCollections.observableArrayList(draggedCards));
     }
@@ -390,7 +389,6 @@ public class Game extends Pane {
 
 
     public void setRemainingCards() {
-        System.out.println("REMAINING CARDS");
 
         remainingCards = cardsOnTable();
         sortRemainingCards();
@@ -412,7 +410,6 @@ public class Game extends Pane {
         List<Card> temp = new ArrayList<>(1);
         temp.add(remainingCards.get(0));
         remainingCards.remove(0);
-        System.out.println(temp.get(0).getSuit() + " " + temp.get(0).getRank());
         MouseUtil.slideToDest(temp, autoSelectDest(temp.get(0)));
     }
 
