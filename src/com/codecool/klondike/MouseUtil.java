@@ -34,7 +34,6 @@ public class MouseUtil {
                     card.getDropShadow().setOffsetX(0);
                     card.getDropShadow().setOffsetY(0);
                     game.draggedCards.remove(card);
-                    System.out.println("asd");
                 });
     }
 
@@ -79,7 +78,6 @@ public class MouseUtil {
                         } catch (IndexOutOfBoundsException ex){
 
                         }
-                        System.out.println("asd");
                     });
         }
     }
