@@ -346,9 +346,43 @@ public class Game extends Pane {
         currentPiles.add(discardPile);
         currentPiles.addAll(tableauPiles);
         while (cardsOnTable()) {
-            // ToDo
+            Card smallest = null;
+            for (Pile pile : currentPiles) {
+                Card temp = pile.getTopCard();
+                if (temp != null) {
+                    if (smallest == null || smallest.getRank().ordinal() < temp.getRank().ordinal()) {
+                        smallest = temp;
+                    }
+                }
+            }
+            List<Card> temp = new ArrayList<>(1);
+            temp.add(smallest);
+            MouseUtil.slideToDest(temp, autoSelectDest(smallest));
         }
 
+    }
+
+    private Pile autoSelectDest(Card card) {
+        for (Pile pile : foundationPiles) {
+            if (card.getRank() == Card.Rank.ACE) {
+                if (pile.isEmpty()) {
+                    return pile;
+                } else {
+                    throw new RuntimeException("ERROR: No empty foundation pile found for Ace.");
+                }
+            } else {
+                if (card.getSuit() == pile.getTopCard().getSuit()) {
+                    if (card.getRank().ordinal() - 1 == pile.getTopCard().getRank().ordinal()) {
+                        return pile;
+                    } else {
+                        throw new RuntimeException("ERROR: Card can't be placed in matching suit foundation pile. ");
+                    }
+                } else {
+                    throw new RuntimeException("ERROR: Matching suit foundation pile can't be found. ");
+                }
+            }
+        }
+        throw new RuntimeException("ERROR: Failed automatic destination selection.");
     }
 
     /**
