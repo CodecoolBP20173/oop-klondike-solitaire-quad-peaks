@@ -82,6 +82,10 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public List<Card> getAllCards(){
+        return cards;
+    }
+
     public int size(){
         return cards.size();
     }
