@@ -400,6 +400,26 @@ public class Game extends Pane {
         return true;
     }
 
+    /**
+     * CHecks if all cards on the board (discard, stock and tableau Piles) are face up.
+     *
+     * @return true if there are no facedown cards, false otherwise
+     */
+    private boolean allCardsFaceUp() {
+        List<Pile> currentPiles = FXCollections.observableArrayList();
+        currentPiles.add(discardPile);
+        currentPiles.add(stockPile);
+        currentPiles.addAll(tableauPiles);
+        for (Pile pile : currentPiles) {
+            for (Card card : pile.getCards()) {
+                if (card.isFaceDown()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public Button setRestartButton(Stage primaryStage) {
         Button restartButton = new Button();
         restartButton = formatRestartButton(restartButton);
