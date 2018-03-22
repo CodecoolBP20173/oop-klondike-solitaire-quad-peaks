@@ -74,7 +74,11 @@ public class MouseUtil {
                         }
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
-                        game.checkAutoWin();
+                        try {
+                            game.checkAutoWin();
+                        } catch (IndexOutOfBoundsException ex){
+
+                        }
                         System.out.println("asd");
                     });
         }
