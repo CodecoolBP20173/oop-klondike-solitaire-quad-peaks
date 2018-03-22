@@ -15,7 +15,7 @@ public class Pile extends Pane {
 
     private PileType pileType;
     private String name;
-    private double cardGap;
+    private double cardGap = 1;
     private ObservableList<Card> cards = FXCollections.observableArrayList();
 
     public Pile(PileType pileType, String name, double cardGap) {
@@ -37,6 +37,14 @@ public class Pile extends Pane {
 
     public ObservableList<Card> getCards() {
         return cards;
+    }
+
+    public List<Card> getCardAndbelow(int index){
+        List<Card> belowcards = FXCollections.observableArrayList();
+        for(int i = index; i < cards.size(); i++){
+            belowcards.add(cards.get(i));
+        }
+        return belowcards;
     }
 
     public int numOfCards() {

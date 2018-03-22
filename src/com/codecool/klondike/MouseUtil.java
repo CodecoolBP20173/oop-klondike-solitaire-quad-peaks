@@ -18,16 +18,19 @@ import java.util.List;
 
 public class MouseUtil {
 
+    public static Game game;
+
     public static void slideBack(Card card) {
         double sourceX = card.getLayoutX() + card.getTranslateX();
         double sourceY = card.getLayoutY() + card.getTranslateY();
         double targetX = card.getLayoutX();
         double targetY = card.getLayoutY();
         animateCardMovement(card, sourceX, sourceY,
-                targetX, targetY, Duration.millis(150), e -> {
+                targetX, targetY, Duration.millis(300), e -> {
                     card.getDropShadow().setRadius(2);
                     card.getDropShadow().setOffsetX(0);
                     card.getDropShadow().setOffsetY(0);
+                    game.draggedCards.remove(card);
                 });
     }
 
@@ -54,13 +57,15 @@ public class MouseUtil {
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
 
             animateCardMovement(currentCard, sourceX, sourceY, targetX,
-                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(150),
+                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(300),
                     e -> {
                         currentCard.moveToPile(destPile);
                         currentCard.getDropShadow().setRadius(2);
                         currentCard.getDropShadow().setOffsetX(0);
                         currentCard.getDropShadow().setOffsetY(0);
 
+                        game.draggedCards.remove(currentCard);
+                        game.isGameWon();
                     });
         }
     }
