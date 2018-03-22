@@ -4,5 +4,6 @@ public enum  EventType {
     moveToDiscard,
     mouseSlide,
     moveToFoundation,
-    cardFlip
+    cardFlip,
+    reloadStack
 }

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -14,11 +15,13 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.image.ImageView;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -38,6 +41,7 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
     public static History history;
+    private int numOfCardsinFoundationPiles;
 
 
 
@@ -87,6 +91,7 @@ public class Game extends Pane {
                 break;
             }
         }
+        isGameWon();
     }
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -144,9 +149,17 @@ public class Game extends Pane {
         }
     };
 
-    public boolean isGameWon() {
-        //TODO
-        return false;
+    public void isGameWon() {
+
+        for (Pile pile: foundationPiles) {
+            numOfCardsinFoundationPiles += pile.numOfCards();
+        }
+        if (numOfCardsinFoundationPiles == 52) {
+            addAlert();
+            System.out.println("WINWINWINW");
+
+        }
+        numOfCardsinFoundationPiles = 0;
     }
 
     private void addButtons() {
@@ -159,6 +172,14 @@ public class Game extends Pane {
         });
         this.getChildren().add(unDoButton);
     }
+
+    private void addAlert() {
+        Alert winalert = new Alert(Alert.AlertType.INFORMATION);
+        winalert.setHeaderText("Congratulations!");
+        winalert.setContentText("You have won the game!");
+        winalert.showAndWait();
+    }
+
 
     public Game(Stage primaryStage) {
         deck = Card.createNewDeck();
@@ -178,7 +199,13 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        ObservableList<Card> cards = discardPile.getCards();
+        Collections.reverse(cards);
+        for (Object discardedCard : cards.toArray()) {
+            ((Card)discardedCard).moveToPile(stockPile);
+            ((Card)discardedCard).flip();
+        }
+        history.addEvent(EventType.reloadStack,discardPile,stockPile.getCards());
         System.out.println("Stock refilled from discard pile.");
     }
 
