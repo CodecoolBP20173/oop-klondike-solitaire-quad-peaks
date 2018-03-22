@@ -41,7 +41,6 @@ public class Game extends Pane {
     public static History history;
 
 
-
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
@@ -95,12 +94,13 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
-        if(!draggedCards.isEmpty()) return;;
+        if (!draggedCards.isEmpty()) return;
+        ;
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
     };
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
-        if(draggedCards.isEmpty()){
+        if (draggedCards.isEmpty()) {
             Card card = (Card) e.getSource();
             Pile activePile = card.getContainingPile();
             List<Card> cardsToDrag = activePile.getCardAndbelow(activePile.getCards().indexOf(card));
@@ -128,8 +128,7 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
-        if (draggedCards.isEmpty())
-        {
+        if (draggedCards.isEmpty()) {
             return;
         }
 
@@ -186,7 +185,7 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
             return isMoveToFoundationValid(card, destPile);
-        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
             return isMoveToTableauValid(card, destPile);
         } else {
             return false;
@@ -342,11 +341,11 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
-    private void autoWinGame(){
+    private void autoWinGame() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
         currentPiles.add(discardPile);
         currentPiles.addAll(tableauPiles);
-        while (cardsOnTable()){
+        while (cardsOnTable()) {
             // ToDo
         }
 
@@ -357,9 +356,16 @@ public class Game extends Pane {
      *
      * @return true if there are cards on the tabe, false otherwise
      */
-    private boolean cardsOnTable(){
-        // ToDo
-        return false;
+    private boolean cardsOnTable() {
+        for (Pile pile : foundationPiles) {
+            if (!pile.isEmpty()) {
+                return false;
+            }
+        }
+        if (!(discardPile.isEmpty() && stockPile.isEmpty())) {
+            return false;
+        }
+        return true;
     }
 
     public Button setRestartButton(Stage primaryStage) {
