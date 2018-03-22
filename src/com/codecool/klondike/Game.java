@@ -177,7 +177,7 @@ public class Game extends Pane {
         Alert winalert = new Alert(Alert.AlertType.INFORMATION);
         winalert.setHeaderText("Congratulations!");
         winalert.setContentText("You have won the game!");
-        winalert.showAndWait();
+        winalert.show();
     }
 
 
