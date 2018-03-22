@@ -42,7 +42,8 @@ public class Game extends Pane {
     public static History history;
     private int numOfCardsinFoundationPiles;
 
-    public List<Card> remainingCards = null;
+    private List<Card> remainingCards = FXCollections.observableArrayList();
+    public boolean autoWin = false;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -53,6 +54,9 @@ public class Game extends Pane {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
+
+            checkAutoWin();
+
             System.out.println("Placed " + card + " to the waste.");
         }
         if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
@@ -80,6 +84,7 @@ public class Game extends Pane {
                     history.addEvent(EventType.moveToFoundation, containingPile, card);
                     card.moveToPile(pile);
                     Pile.flipTopCardOfTableau(containingPile);
+                    checkAutoWin();
                     break;
                 }
             } else if (pile.getTopCard().getSuit() == card.getSuit() &&
@@ -88,6 +93,7 @@ public class Game extends Pane {
                 history.addEvent(EventType.moveToFoundation, containingPile, card);
                 card.moveToPile(pile);
                 Pile.flipTopCardOfTableau(containingPile);
+                checkAutoWin();
                 break;
             }
         }
@@ -151,7 +157,7 @@ public class Game extends Pane {
 
     public void isGameWon() {
 
-        for (Pile pile: foundationPiles) {
+        for (Pile pile : foundationPiles) {
             numOfCardsinFoundationPiles += pile.numOfCards();
         }
         if (numOfCardsinFoundationPiles == 52) {
@@ -202,7 +208,7 @@ public class Game extends Pane {
         if (!card.isFaceDown()) {
             if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
                 return isMoveToFoundationValid(card, destPile);
-            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
                 return isMoveToTableauValid(card, destPile);
             } else {
                 return false;
@@ -361,33 +367,47 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
+    public void checkAutoWin() {
+        if (autoWin) {
+            autoWinNextStep();
+        } else {
+            allCardsFaceUp();
+        }
+    }
+
 
     public void setRemainingCards() {
-        List<Pile> currentPiles = new ArrayList();
-        List<Card> remainingCardsInOrder = new ArrayList();
+        System.out.println("REMAINING CARDS");
+        List<Pile> currentPiles = FXCollections.observableArrayList();
+        List<Card> remainingCardsInOrder = FXCollections.observableArrayList();
         currentPiles.add(discardPile);
         currentPiles.addAll(tableauPiles);
         while (cardsOnTable()) {
             Card smallest = null;
             for (Pile pile : currentPiles) {
                 Card temp = pile.getTopCard();
+                System.out.println(temp.getSuit() + " " + temp.getRank());
                 if (temp != null) {
                     if (smallest == null || smallest.getRank().ordinal() < temp.getRank().ordinal()) {
                         smallest = temp;
+                        System.out.println(temp.getSuit() + " " + temp.getRank());
                     }
                 }
             }
             remainingCardsInOrder.add(smallest);
-            remainingCards = remainingCardsInOrder;
-            /*
-            List<Card> temp = new ArrayList<>(1);
-            temp.add(smallest);
-            MouseUtil.slideToDest(temp, autoSelectDest(smallest));
-            */
         }
+        remainingCards = remainingCardsInOrder;
     }
 
-    public void removeOneRemainingCard(){
+    public void autoWinNextStep() {
+        List<Card> temp = new ArrayList<>(1);
+        temp.add(remainingCards.get(0));
+        remainingCards.remove(0);
+        System.out.println(temp.get(0).getSuit() + " " + temp.get(0).getRank());
+        MouseUtil.slideToDest(temp, autoSelectDest(temp.get(0)));
+    }
+
+    public void removeOneRemainingCard() {
         remainingCards.remove(0);
     }
 
@@ -424,7 +444,7 @@ public class Game extends Pane {
      * @return true if there are cards on the tabe, false otherwise
      */
     private boolean cardsOnTable() {
-        for (Pile pile : foundationPiles) {
+        for (Pile pile : tableauPiles) {
             if (!pile.isEmpty()) {
                 return false;
             }
@@ -440,17 +460,22 @@ public class Game extends Pane {
      *
      * @return true if there are no facedown cards, false otherwise
      */
-    public boolean allCardsFaceUp() {
+    public void allCardsFaceUp() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
+        if (1 < discardPile.size()){
+            return;
+        }
         currentPiles.add(discardPile);
         currentPiles.add(stockPile);
         currentPiles.addAll(tableauPiles);
         for (Pile pile : currentPiles) {
-            if (!pile.allCardsFaceup()){
-                return false;
+            if (!pile.allCardsFaceup()) {
+                return;
             }
         }
-        return true;
+        autoWin = true;
+        setRemainingCards();
+        autoWinNextStep();
     }
 
     public Button setRestartButton(Stage primaryStage) {

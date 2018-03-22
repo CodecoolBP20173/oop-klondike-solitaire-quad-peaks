@@ -72,21 +72,13 @@ public class MouseUtil {
 
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
-                        if(!autoFlip){
+                        if (!autoFlip) {
                             Pile.flipTopCardOfTableau(sourcePile);
                             autoFlip = true;
                         }
                         Pile.flipTopCardOfTableau(sourcePile);
 
-                        if (autoWin) {
-                            List<Card> temp = new ArrayList<>(1);
-                            temp.add(game.remainingCards.get(0));
-                            game.removeOneRemainingCard();
-                            MouseUtil.slideToDest(temp, game.autoSelectDest(temp.get(0)));
-                        } else if (game.allCardsFaceUp()) {
-                            game.setRemainingCards();
-                            autoWin = true;
-                        }
+                        game.checkAutoWin();
                         System.out.println("asd");
                     });
         }

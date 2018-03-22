@@ -82,6 +82,10 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public int size(){
+        return cards.size();
+    }
+
     public static void flipTopCardOfTableau(Pile sourcePile) {
         if (sourcePile.getPileType() == Pile.PileType.TABLEAU) {
             Card card = sourcePile.getTopCard();
