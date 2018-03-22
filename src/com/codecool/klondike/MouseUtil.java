@@ -34,7 +34,6 @@ public class MouseUtil {
                     card.getDropShadow().setOffsetX(0);
                     card.getDropShadow().setOffsetY(0);
                     game.draggedCards.remove(card);
-                    System.out.println("asd");
                 });
     }
 
@@ -74,8 +73,11 @@ public class MouseUtil {
                         }
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
-                        game.checkAutoWin();
-                        System.out.println("asd");
+                        try {
+                            game.checkAutoWin();
+                        } catch (IndexOutOfBoundsException ex){
+
+                        }
                     });
         }
     }
@@ -85,6 +87,8 @@ public class MouseUtil {
             double targetX, double targetY, Duration duration,
             EventHandler<ActionEvent> doAfter) {
 
+        card.toFront();
+        
         Path path = new Path();
         path.getElements().add(new MoveToAbs(card, sourceX, sourceY));
         path.getElements().add(new LineToAbs(card, targetX, targetY));

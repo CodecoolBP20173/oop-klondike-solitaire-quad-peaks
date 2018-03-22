@@ -40,7 +40,7 @@ public class Card extends ImageView {
         return suit;
     }
 
-    public String getColor () {
+    private String getColor() {
         String color;
         if (this.getSuit().name().equals("HEARTS") || this.getSuit().name().equals("DIAMONDS")) {
             color = "red";
@@ -58,7 +58,7 @@ public class Card extends ImageView {
         return faceDown;
     }
 
-    public String getShortName() {
+    private String getShortName() {
         return "S" + suit + "R" + (rank.ordinal() + 1);
     }
 
@@ -104,8 +104,8 @@ public class Card extends ImageView {
 
     public static List<Card> createNewDeck() {
         List<Card> result = new ArrayList<>();
-        for (Suit suit: Suit.values() ) {
-            for (Rank rank: Rank.values()) {
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
                 result.add(new Card(suit, rank, true));
 
             }
@@ -117,7 +117,7 @@ public class Card extends ImageView {
     public static void loadCardImages() {
         cardBackImage = new Image("card_images/card_back.png");
         String suitName = "";
-        for (Suit suit: Suit.values()) {
+        for (Suit suit : Suit.values()) {
             switch (suit) {
                 case HEARTS:
                     suitName = "hearts";
@@ -140,7 +140,6 @@ public class Card extends ImageView {
             }
         }
     }
-
 
 
     public enum Suit {

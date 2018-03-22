@@ -45,7 +45,7 @@ public class Game extends Pane {
     private int numOfCardsinFoundationPiles;
 
     private List<Card> remainingCards = FXCollections.observableArrayList();
-    public boolean autoWin = false;
+    private boolean autoWin = false;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -59,7 +59,7 @@ public class Game extends Pane {
 
             checkAutoWin();
 
-            System.out.println("Placed " + card + " to the waste.");
+//            System.out.println("Placed " + card + " to the waste.");
         }
         if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
                 card.getContainingPile().getPileType() == Pile.PileType.DISCARD) &&
@@ -107,8 +107,8 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
-        if (!draggedCards.isEmpty()) return;
-        ;
+        if (!draggedCards.isEmpty())
+            return;
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
     };
@@ -164,7 +164,6 @@ public class Game extends Pane {
         }
         if (numOfCardsinFoundationPiles == 52) {
             addAlert();
-            System.out.println("WINWINWINW");
 
         }
         numOfCardsinFoundationPiles = 0;
@@ -206,18 +205,18 @@ public class Game extends Pane {
         card.setOnMouseClicked(onMouseClickedHandler);
     }
 
-    public void refillStockFromDiscard() {
+    private void refillStockFromDiscard() {
         ObservableList<Card> cards = discardPile.getCards();
         Collections.reverse(cards);
         for (Object discardedCard : cards.toArray()) {
-            ((Card)discardedCard).moveToPile(stockPile);
-            ((Card)discardedCard).flip();
+            ((Card) discardedCard).moveToPile(stockPile);
+            ((Card) discardedCard).flip();
         }
-        history.addEvent(EventType.reloadStack,discardPile,stockPile.getCards());
-        System.out.println("Stock refilled from discard pile.");
+        history.addEvent(EventType.reloadStack, discardPile, stockPile.getCards());
+//        System.out.println("Stock refilled from discard pile.");
     }
 
-    public boolean isMoveValid(Card card, Pile destPile) {
+    private boolean isMoveValid(Card card, Pile destPile) {
         if (!card.isFaceDown()) {
             if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
                 return isMoveToFoundationValid(card, destPile);
@@ -275,7 +274,7 @@ public class Game extends Pane {
                 return false;
             }
         } else if (destPile.getTopCard().getRank().ordinal() + 1 == card.getRank().ordinal() &&
-                destPile.getTopCard().getSuit() == card.getSuit()) {
+                Card.isSameSuit(destPile.getTopCard(), card)) {
             return true;
         } else {
             return false;
@@ -310,7 +309,7 @@ public class Game extends Pane {
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
-        System.out.println(msg);
+//        System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         history.addEvent(EventType.mouseSlide, draggedCards.get(0).getContainingPile(), FXCollections.observableArrayList(draggedCards));
     }
@@ -353,7 +352,7 @@ public class Game extends Pane {
      * Each column gets one more cards then the first one.
      * The top cards of the stockPile gets flipped the others are turned over.
      */
-    public void dealCards() {
+    private void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
@@ -380,6 +379,11 @@ public class Game extends Pane {
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
 
+    /**
+     * Checks if the autoWin boolean value is true or false.
+     * If true, that menas that the game is in automatic-winning-mode, hence initiates the next step of the automatic winning.
+     * If false, than calls allCardsFaceUp function, to check if all cards are visible, and therefore the winning conditions will be met.
+     */
     public void checkAutoWin() {
         if (autoWin) {
             autoWinNextStep();
@@ -389,17 +393,15 @@ public class Game extends Pane {
     }
 
 
-    public void setRemainingCards() {
-        System.out.println("REMAINING CARDS");
-
+    private void setRemainingCards() {
         remainingCards = cardsOnTable();
         sortRemainingCards();
     }
 
-    private void sortRemainingCards(){
-        for (int i = 0; i < remainingCards.size() - 1; i ++){
-            for (int j = i + 1; j < remainingCards.size(); j ++){
-                if (remainingCards.get(j).getRank().ordinal() < remainingCards.get(i).getRank().ordinal()){
+    private void sortRemainingCards() {
+        for (int i = 0; i < remainingCards.size() - 1; i++) {
+            for (int j = i + 1; j < remainingCards.size(); j++) {
+                if (remainingCards.get(j).getRank().ordinal() < remainingCards.get(i).getRank().ordinal()) {
                     Card temp = remainingCards.get(i);
                     remainingCards.set(i, remainingCards.get(j));
                     remainingCards.set(j, temp);
@@ -408,14 +410,16 @@ public class Game extends Pane {
         }
     }
 
-    public void autoWinNextStep() {
+    private void autoWinNextStep() {
         List<Card> temp = new ArrayList<>(1);
         temp.add(remainingCards.get(0));
         remainingCards.remove(0);
-        System.out.println(temp.get(0).getSuit() + " " + temp.get(0).getRank());
         MouseUtil.slideToDest(temp, autoSelectDest(temp.get(0)));
     }
 
+    /**
+     * Removes one card from the first (0-th) position of the remainingCards Array.
+     */
     public void removeOneRemainingCard() {
         remainingCards.remove(0);
     }
@@ -426,7 +430,7 @@ public class Game extends Pane {
      * @param card the card for which the destination (foundation pile) is chosen
      * @return the foundation pile, on which the 'card' would have to go
      */
-    public Pile autoSelectDest(Card card) {
+    private Pile autoSelectDest(Card card) {
         for (Pile pile : foundationPiles) {
             if (card.getRank() == Card.Rank.ACE) {
                 if (pile.isEmpty()) {
@@ -465,12 +469,10 @@ public class Game extends Pane {
 
     /**
      * CHecks if all cards on the board (discard, stock and tableau Piles) are face up.
-     *
-     * @return true if there are no facedown cards, false otherwise
      */
-    public void allCardsFaceUp() {
+    private void allCardsFaceUp() {
         List<Pile> currentPiles = FXCollections.observableArrayList();
-        if (1 < discardPile.size()){
+        if (1 < discardPile.size()) {
             return;
         }
         currentPiles.add(discardPile);
@@ -486,7 +488,7 @@ public class Game extends Pane {
         autoWinNextStep();
     }
 
-    public Button setRestartButton(Stage primaryStage) {
+    private Button setRestartButton(Stage primaryStage) {
         Button restartButton = new Button();
         restartButton = formatRestartButton(restartButton);
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
