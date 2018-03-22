@@ -179,10 +179,14 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
-            return isMoveToFoundationValid(card, destPile);
-        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
-            return isMoveToTableauValid(card, destPile);
+        if (!card.isFaceDown()) {
+            if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
+                return isMoveToFoundationValid(card, destPile);
+            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+                return isMoveToTableauValid(card, destPile);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
