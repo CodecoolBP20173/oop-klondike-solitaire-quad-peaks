@@ -343,7 +343,7 @@ public class Game extends Pane {
     }
 
 
-    private void setRemainingCards() {
+    public void setRemainingCards() {
         List<Pile> currentPiles = new ArrayList();
         List<Card> remainingCardsInOrder = new ArrayList();
         currentPiles.add(discardPile);
@@ -366,7 +366,10 @@ public class Game extends Pane {
             MouseUtil.slideToDest(temp, autoSelectDest(smallest));
             */
         }
+    }
 
+    public void removeOneRemainingCard(){
+        remainingCards.remove(0);
     }
 
     /**
@@ -375,7 +378,7 @@ public class Game extends Pane {
      * @param card the card for which the destination (foundation pile) is chosen
      * @return the foundation pile, on which the 'card' would have to go
      */
-    private Pile autoSelectDest(Card card) {
+    public Pile autoSelectDest(Card card) {
         for (Pile pile : foundationPiles) {
             if (card.getRank() == Card.Rank.ACE) {
                 if (pile.isEmpty()) {

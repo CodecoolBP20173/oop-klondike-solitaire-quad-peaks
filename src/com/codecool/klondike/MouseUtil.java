@@ -15,10 +15,12 @@ import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class MouseUtil {
 
     public static Game game;
+    private static boolean autoWin = false;
 
     public static void slideBack(Card card) {
         double sourceX = card.getLayoutX() + card.getTranslateX();
@@ -69,6 +71,16 @@ public class MouseUtil {
                         game.draggedCards.remove(currentCard);
                         game.isGameWon();
                         Pile.flipTopCardOfTableau(sourcePile);
+
+                        if (autoWin) {
+                            List<Card> temp = new ArrayList<>(1);
+                            temp.add(game.remainingCards.get(0));
+                            game.removeOneRemainingCard();
+                            MouseUtil.slideToDest(temp, game.autoSelectDest(temp.get(0)));
+                        } else if (game.allCardsFaceUp()) {
+                            game.setRemainingCards();
+                            autoWin = true;
+                        }
                         System.out.println("asd");
                     });
         }
