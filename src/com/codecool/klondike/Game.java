@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -186,15 +187,24 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        Collections.reverse(discardPile.getCards());
+        for (Card discardedCard : discardPile.getCards()) {
+            discardedCard.flip();
+            stockPile.addCard(discardedCard);
+        }
+        discardPile.clear();
         System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
-            return isMoveToFoundationValid(card, destPile);
-        } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
-            return isMoveToTableauValid(card, destPile);
+        if (!card.isFaceDown()) {
+            if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
+                return isMoveToFoundationValid(card, destPile);
+            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+                return isMoveToTableauValid(card, destPile);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
