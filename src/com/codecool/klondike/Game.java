@@ -154,7 +154,7 @@ public class Game extends Pane {
         for (Pile pile: foundationPiles) {
             numOfCardsinFoundationPiles += pile.numOfCards();
         }
-        if (numOfCardsinFoundationPiles == 3) {
+        if (numOfCardsinFoundationPiles == 52) {
             addAlert();
             System.out.println("WINWINWINW");
 
