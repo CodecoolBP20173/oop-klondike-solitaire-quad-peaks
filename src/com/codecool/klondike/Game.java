@@ -12,6 +12,8 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -140,11 +142,13 @@ public class Game extends Pane {
         this.getChildren().add(unDoButton);
     }
 
-    public Game() {
+    public Game(Stage primaryStage) {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
         addButtons();
+        setRestartButton(primaryStage);
+        getChildren().add(setRestartButton(primaryStage));
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -324,6 +328,27 @@ public class Game extends Pane {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    }
+
+    public Button setRestartButton(Stage primaryStage) {
+        Button restartButton = new Button();
+        restartButton = formatRestartButton(restartButton);
+        restartButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Klondike.startGame(primaryStage);
+            }
+        });
+        return restartButton;
+    }
+
+    private Button formatRestartButton(Button restartButton) {
+        restartButton.setText("Restart");
+        restartButton.setPrefWidth(70);
+        restartButton.setPrefHeight(30);
+        restartButton.setLayoutX(0);
+        restartButton.setLayoutY(50);
+        return restartButton;
     }
 
 }
