@@ -378,25 +378,21 @@ public class Game extends Pane {
 
     public void setRemainingCards() {
         System.out.println("REMAINING CARDS");
-        List<Pile> currentPiles = FXCollections.observableArrayList();
-        List<Card> remainingCardsInOrder = FXCollections.observableArrayList();
-        currentPiles.add(discardPile);
-        currentPiles.addAll(tableauPiles);
-        while (cardsOnTable()) {
-            Card smallest = null;
-            for (Pile pile : currentPiles) {
-                Card temp = pile.getTopCard();
-                System.out.println(temp.getSuit() + " " + temp.getRank());
-                if (temp != null) {
-                    if (smallest == null || smallest.getRank().ordinal() < temp.getRank().ordinal()) {
-                        smallest = temp;
-                        System.out.println(temp.getSuit() + " " + temp.getRank());
-                    }
+
+        remainingCards = cardsOnTable();
+        sortRemainingCards();
+    }
+
+    private void sortRemainingCards(){
+        for (int i = 0; i < remainingCards.size() - 1; i ++){
+            for (int j = i + 1; j < remainingCards.size(); j ++){
+                if (remainingCards.get(j).getRank().ordinal() < remainingCards.get(i).getRank().ordinal()){
+                    Card temp = remainingCards.get(i);
+                    remainingCards.set(i, remainingCards.get(j));
+                    remainingCards.set(j, temp);
                 }
             }
-            remainingCardsInOrder.add(smallest);
         }
-        remainingCards = remainingCardsInOrder;
     }
 
     public void autoWinNextStep() {
@@ -443,16 +439,15 @@ public class Game extends Pane {
      *
      * @return true if there are cards on the tabe, false otherwise
      */
-    private boolean cardsOnTable() {
+    private List<Card> cardsOnTable() {
+        ArrayList<Card> cardList = new ArrayList<>();
         for (Pile pile : tableauPiles) {
-            if (!pile.isEmpty()) {
-                return false;
-            }
+            cardList.addAll(pile.getAllCards());
+
         }
-        if (!(discardPile.isEmpty() && stockPile.isEmpty())) {
-            return false;
-        }
-        return true;
+        cardList.addAll(stockPile.getAllCards());
+        cardList.addAll(discardPile.getAllCards());
+        return cardList;
     }
 
     /**
