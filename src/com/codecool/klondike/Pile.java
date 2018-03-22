@@ -39,9 +39,9 @@ public class Pile extends Pane {
         return cards;
     }
 
-    public List<Card> getCardAndbelow(int index){
+    public List<Card> getCardAndbelow(int index) {
         List<Card> belowcards = FXCollections.observableArrayList();
-        for(int i = index; i < cards.size(); i++){
+        for (int i = index; i < cards.size(); i++) {
             belowcards.add(cards.get(i));
         }
         return belowcards;
@@ -82,22 +82,42 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
+    public List<Card> getAllCards(){
+        return cards;
+    }
+
+    public int size(){
+        return cards.size();
+    }
+
     public static void flipTopCardOfTableau(Pile sourcePile) {
         if (sourcePile.getPileType() == Pile.PileType.TABLEAU) {
             Card card = sourcePile.getTopCard();
-            if (card != null && card.isFaceDown())
-            {
+            if (card != null && card.isFaceDown()) {
                 card.flip();
-                Game.history.addEvent(EventType.cardFlip,null,card);
+                Game.history.addEvent(EventType.cardFlip, null, card);
             }
 
         }
     }
 
     public int getTopCardValue() {
-            return this.getTopCard().getRank().ordinal();
+        return this.getTopCard().getRank().ordinal();
     }
 
+    /**
+     * Checks if all the cards are face up in the Pile.
+     *
+     * @return true if all cards are face up, false otherwise
+     */
+    public boolean allCardsFaceup() {
+        for (Card card : cards) {
+            if (card.isFaceDown()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
     public void setBlurredBackground() {

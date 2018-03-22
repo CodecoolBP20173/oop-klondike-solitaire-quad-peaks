@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -43,6 +44,8 @@ public class Game extends Pane {
     public static History history;
     private int numOfCardsinFoundationPiles;
 
+    private List<Card> remainingCards = FXCollections.observableArrayList();
+    public boolean autoWin = false;
 
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
@@ -53,6 +56,9 @@ public class Game extends Pane {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
+
+            checkAutoWin();
+
             System.out.println("Placed " + card + " to the waste.");
         }
         if ((card.getContainingPile().getPileType() == Pile.PileType.TABLEAU ||
@@ -80,6 +86,7 @@ public class Game extends Pane {
                     history.addEvent(EventType.moveToFoundation, containingPile, card);
                     card.moveToPile(pile);
                     Pile.flipTopCardOfTableau(containingPile);
+                    checkAutoWin();
                     break;
                 }
             } else if (pile.getTopCard().getSuit() == card.getSuit() &&
@@ -88,6 +95,7 @@ public class Game extends Pane {
                 history.addEvent(EventType.moveToFoundation, containingPile, card);
                 card.moveToPile(pile);
                 Pile.flipTopCardOfTableau(containingPile);
+                checkAutoWin();
                 break;
             }
         }
@@ -99,12 +107,13 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
-        if(!draggedCards.isEmpty()) return;;
+        if (!draggedCards.isEmpty()) return;
+        ;
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
     };
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
-        if(draggedCards.isEmpty()){
+        if (draggedCards.isEmpty()) {
             Card card = (Card) e.getSource();
             Pile activePile = card.getContainingPile();
             List<Card> cardsToDrag = activePile.getCardAndbelow(activePile.getCards().indexOf(card));
@@ -132,8 +141,7 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
-        if (draggedCards.isEmpty())
-        {
+        if (draggedCards.isEmpty()) {
             return;
         }
 
@@ -151,7 +159,7 @@ public class Game extends Pane {
 
     public void isGameWon() {
 
-        for (Pile pile: foundationPiles) {
+        for (Pile pile : foundationPiles) {
             numOfCardsinFoundationPiles += pile.numOfCards();
         }
         if (numOfCardsinFoundationPiles == 52) {
@@ -213,7 +221,7 @@ public class Game extends Pane {
         if (!card.isFaceDown()) {
             if (destPile.getPileType() == Pile.PileType.FOUNDATION) {
                 return isMoveToFoundationValid(card, destPile);
-            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)){
+            } else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
                 return isMoveToTableauValid(card, destPile);
             } else {
                 return false;
@@ -370,6 +378,112 @@ public class Game extends Pane {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    }
+
+    public void checkAutoWin() {
+        if (autoWin) {
+            autoWinNextStep();
+        } else {
+            allCardsFaceUp();
+        }
+    }
+
+
+    public void setRemainingCards() {
+        System.out.println("REMAINING CARDS");
+
+        remainingCards = cardsOnTable();
+        sortRemainingCards();
+    }
+
+    private void sortRemainingCards(){
+        for (int i = 0; i < remainingCards.size() - 1; i ++){
+            for (int j = i + 1; j < remainingCards.size(); j ++){
+                if (remainingCards.get(j).getRank().ordinal() < remainingCards.get(i).getRank().ordinal()){
+                    Card temp = remainingCards.get(i);
+                    remainingCards.set(i, remainingCards.get(j));
+                    remainingCards.set(j, temp);
+                }
+            }
+        }
+    }
+
+    public void autoWinNextStep() {
+        List<Card> temp = new ArrayList<>(1);
+        temp.add(remainingCards.get(0));
+        remainingCards.remove(0);
+        System.out.println(temp.get(0).getSuit() + " " + temp.get(0).getRank());
+        MouseUtil.slideToDest(temp, autoSelectDest(temp.get(0)));
+    }
+
+    public void removeOneRemainingCard() {
+        remainingCards.remove(0);
+    }
+
+    /**
+     * Given a card, selects on which of the foundation piles that card would fit.
+     *
+     * @param card the card for which the destination (foundation pile) is chosen
+     * @return the foundation pile, on which the 'card' would have to go
+     */
+    public Pile autoSelectDest(Card card) {
+        for (Pile pile : foundationPiles) {
+            if (card.getRank() == Card.Rank.ACE) {
+                if (pile.isEmpty()) {
+                    return pile;
+                } else {
+                    throw new RuntimeException("ERROR: No empty foundation pile found for Ace.");
+                }
+            } else {
+                if (card.getSuit() == pile.getTopCard().getSuit()) {
+                    if (card.getRank().ordinal() - 1 == pile.getTopCard().getRank().ordinal()) {
+                        return pile;
+                    } else {
+                        throw new RuntimeException("ERROR: Card can't be placed in matching suit foundation pile. ");
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("ERROR: Failed automatic destination selection.");
+    }
+
+    /**
+     * Checks if there are still cards in any of the Stock, Discard or Foundation piles.
+     *
+     * @return true if there are cards on the tabe, false otherwise
+     */
+    private List<Card> cardsOnTable() {
+        ArrayList<Card> cardList = new ArrayList<>();
+        for (Pile pile : tableauPiles) {
+            cardList.addAll(pile.getAllCards());
+
+        }
+        cardList.addAll(stockPile.getAllCards());
+        cardList.addAll(discardPile.getAllCards());
+        return cardList;
+    }
+
+    /**
+     * CHecks if all cards on the board (discard, stock and tableau Piles) are face up.
+     *
+     * @return true if there are no facedown cards, false otherwise
+     */
+    public void allCardsFaceUp() {
+        List<Pile> currentPiles = FXCollections.observableArrayList();
+        if (1 < discardPile.size()){
+            return;
+        }
+        currentPiles.add(discardPile);
+        currentPiles.add(stockPile);
+        currentPiles.addAll(tableauPiles);
+        for (Pile pile : currentPiles) {
+            if (!pile.allCardsFaceup()) {
+                return;
+            }
+        }
+        autoWin = true;
+        setRemainingCards();
+        autoWinNextStep();
     }
 
     public Button setRestartButton(Stage primaryStage) {
