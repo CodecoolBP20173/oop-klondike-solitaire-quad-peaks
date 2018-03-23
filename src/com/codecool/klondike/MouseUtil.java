@@ -15,8 +15,13 @@ import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class MouseUtil {
+
+    public static Game game;
+    private static boolean autoWin = false;
+    static boolean autoFlip = false;
 
     public static void slideBack(Card card) {
         double sourceX = card.getLayoutX() + card.getTranslateX();
@@ -24,16 +29,19 @@ public class MouseUtil {
         double targetX = card.getLayoutX();
         double targetY = card.getLayoutY();
         animateCardMovement(card, sourceX, sourceY,
-                targetX, targetY, Duration.millis(150), e -> {
+                targetX, targetY, Duration.millis(300), e -> {
                     card.getDropShadow().setRadius(2);
                     card.getDropShadow().setOffsetX(0);
                     card.getDropShadow().setOffsetY(0);
+                    game.draggedCards.remove(card);
                 });
     }
 
     public static void slideToDest(List<Card> cardsToSlide, Pile destPile) {
         if (cardsToSlide == null)
             return;
+
+
         double destCardGap = destPile.getCardGap();
         double targetX;
         double targetY;
@@ -48,16 +56,28 @@ public class MouseUtil {
 
         for (int i = 0; i < cardsToSlide.size(); i++) {
             Card currentCard = cardsToSlide.get(i);
+            Pile sourcePile = currentCard.getContainingPile();
             double sourceX = currentCard.getLayoutX() + currentCard.getTranslateX();
             double sourceY = currentCard.getLayoutY() + currentCard.getTranslateY();
 
             animateCardMovement(currentCard, sourceX, sourceY, targetX,
-                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(150),
+                    targetY + ((destPile.isEmpty() ? i : i + 1) * destCardGap), Duration.millis(300),
                     e -> {
                         currentCard.moveToPile(destPile);
                         currentCard.getDropShadow().setRadius(2);
                         currentCard.getDropShadow().setOffsetX(0);
                         currentCard.getDropShadow().setOffsetY(0);
+
+                        if(game.draggedCards.size() == 1){
+                            Pile.flipTopCardOfTableau(sourcePile);
+                        }
+                        game.draggedCards.remove(currentCard);
+                        game.isGameWon();
+                        try {
+                            game.checkAutoWin();
+                        } catch (IndexOutOfBoundsException ex){
+
+                        }
                     });
         }
     }
@@ -67,6 +87,8 @@ public class MouseUtil {
             double targetX, double targetY, Duration duration,
             EventHandler<ActionEvent> doAfter) {
 
+        card.toFront();
+        
         Path path = new Path();
         path.getElements().add(new MoveToAbs(card, sourceX, sourceY));
         path.getElements().add(new LineToAbs(card, targetX, targetY));
